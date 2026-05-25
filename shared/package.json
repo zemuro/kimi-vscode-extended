@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "main": "./index.ts",
   "dependencies": {
-    "@moonshot-ai/kimi-agent-sdk": "workspace:*"
+    "@moonshot-ai/kimi-agent-sdk": "file:../agent_sdk"
   },
   "devDependencies": {
     "@types/node": "22.x",

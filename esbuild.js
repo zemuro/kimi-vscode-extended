@@ -6,12 +6,12 @@ const production = process.argv.includes("--production");
 const watch = process.argv.includes("--watch");
 
 const pkg = require("./package.json");
-const sdkPkg = require("../agent_sdk/package.json");
+const sdkPkg = require("./agent_sdk/package.json");
 
 const watchAgentSdkPlugin = {
   name: "watch-agent-sdk",
   setup(build) {
-    const agentSdkDir = path.resolve(__dirname, "../agent_sdk");
+    const agentSdkDir = path.resolve(__dirname, "./agent_sdk");
     const tsFiles = [];
 
     function walkDir(dir) {
@@ -68,10 +68,10 @@ async function main() {
       ".ts": "ts",
     },
     alias: {
-      "@moonshot-ai/kimi-agent-sdk": path.resolve(__dirname, "../agent_sdk/index.ts"),
-      "@moonshot-ai/kimi-agent-sdk/errors": path.resolve(__dirname, "../agent_sdk/errors.ts"),
-      "@moonshot-ai/kimi-agent-sdk/schema": path.resolve(__dirname, "../agent_sdk/schema.ts"),
-      "@moonshot-ai/kimi-agent-sdk/utils": path.resolve(__dirname, "../agent_sdk/utils.ts"),
+      "@moonshot-ai/kimi-agent-sdk": path.resolve(__dirname, "./agent_sdk/index.ts"),
+      "@moonshot-ai/kimi-agent-sdk/errors": path.resolve(__dirname, "./agent_sdk/errors.ts"),
+      "@moonshot-ai/kimi-agent-sdk/schema": path.resolve(__dirname, "./agent_sdk/schema.ts"),
+      "@moonshot-ai/kimi-agent-sdk/utils": path.resolve(__dirname, "./agent_sdk/utils.ts"),
     },
     define: {
       __EXTENSION_VERSION__: JSON.stringify(pkg.version),

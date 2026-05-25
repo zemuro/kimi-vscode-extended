@@ -243,12 +243,12 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run build",
+    "vscode:prepublish": "npm run build",
     "dev": "DEBUG=kimi-sdk:* node dev.js",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
-    "build": "pnpm run build:webview && pnpm run build:extension",
-    "build:webview": "pnpm --filter @moonshot-ai/vscode_extension-webview-ui build",
+    "build": "npm run build:webview && npm run build:extension",
+    "build:webview": "cd webview-ui && npm run build",
     "build:extension": "tsc --noEmit && node esbuild.js --production",
     "download:cli": "node scripts/download-cli.js",
     "package:platform": "node scripts/vsix-package.js",
