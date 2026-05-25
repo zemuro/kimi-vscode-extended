@@ -24,3 +24,4 @@ export { InlineError } from "./InlineError";
 export { QuestionDialog } from "./QuestionDialog";
 export { PlanCard } from "./PlanCard";
 export { PlanModeButton } from "./PlanModeButton";
+export { GenerationSettings } from "./GenerationSettings";

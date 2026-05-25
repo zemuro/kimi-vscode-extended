@@ -8,6 +8,21 @@ import type { Handler } from "./types";
 
 const saveConfig: Handler<SessionConfig, { ok: boolean }> = async (params) => {
   saveDefaultModel(params.model, params.thinking);
+
+  // Persist generation config to VS Code settings
+  if (params.generation) {
+    const config = vscode.workspace.getConfiguration("kimi");
+    if (params.generation.temperature !== undefined) {
+      await config.update("generation.temperature", params.generation.temperature, true);
+    }
+    if (params.generation.topP !== undefined) {
+      await config.update("generation.topP", params.generation.topP, true);
+    }
+    if (params.generation.maxTokens !== undefined) {
+      await config.update("generation.maxTokens", params.generation.maxTokens, true);
+    }
+  }
+
   return { ok: true };
 };
 

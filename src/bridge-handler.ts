@@ -142,6 +142,7 @@ export class BridgeHandler {
     const executable = cli.getExecutablePath();
     const env = VSCodeSettings.environmentVariables;
     const yoloMode = VSCodeSettings.yoloMode;
+    const generationConfig = VSCodeSettings.generationConfig;
 
     const existing = this.sessions.get(webviewId);
 
@@ -153,7 +154,8 @@ export class BridgeHandler {
         actualThinking !== existing.thinking ||
         yoloMode !== existing.yoloMode ||
         executable !== existing.executable ||
-        JSON.stringify(env) !== JSON.stringify(existing.env);
+        JSON.stringify(env) !== JSON.stringify(existing.env) ||
+        JSON.stringify(generationConfig) !== JSON.stringify((existing as any)._generationOverrides);
 
       if (needsRestart) {
         existing.close();
@@ -176,6 +178,9 @@ export class BridgeHandler {
       executable,
       env,
       clientInfo: { name: "kimi-code-for-vs-code", version: VSCodeSettings.getExtensionConfig().version },
+      generationOverrides: generationConfig.temperature !== undefined || generationConfig.topP !== undefined || generationConfig.maxTokens !== undefined
+        ? generationConfig
+        : undefined,
     });
 
     this.sessions.set(webviewId, session);

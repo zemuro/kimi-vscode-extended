@@ -52,6 +52,12 @@ export interface HookRegistration {
   handler: HookHandler;
 }
 
+export interface GenerationOverrides {
+  temperature?: number;
+  topP?: number;
+  maxTokens?: number;
+}
+
 export interface ClientOptions {
   sessionId?: string;
   workDir: string;
@@ -66,6 +72,7 @@ export interface ClientOptions {
   skillsDir?: string;
   /** Hook registrations — each binds a subscription to a handler (Wire 1.7) */
   hooks?: HookRegistration[];
+  generationOverrides?: GenerationOverrides;
 }
 
 // Prompt Stream
@@ -390,6 +397,18 @@ export class ProtocolClient {
     }
     if (options.skillsDir) {
       args.push("--skills-dir", options.skillsDir);
+    }
+    if (options.generationOverrides) {
+      const { temperature, topP, maxTokens } = options.generationOverrides;
+      if (temperature !== undefined) {
+        args.push("--temperature", temperature.toString());
+      }
+      if (topP !== undefined) {
+        args.push("--top-p", topP.toString());
+      }
+      if (maxTokens !== undefined) {
+        args.push("--max-tokens", maxTokens.toString());
+      }
     }
     return args;
   }

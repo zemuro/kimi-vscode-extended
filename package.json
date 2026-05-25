@@ -102,6 +102,26 @@
             "Share when active file changes"
           ],
           "description": "Control when to share the active editor's file and cursor position with Kimi"
+        },
+        "kimi.generation.temperature": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Sampling temperature for the LLM (0 = deterministic, 2 = very random). Only applies when using a forked CLI that supports generation parameters."
+        },
+        "kimi.generation.topP": {
+          "type": "number",
+          "default": 0.9,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Nucleus sampling top-p for the LLM. Only applies when using a forked CLI that supports generation parameters."
+        },
+        "kimi.generation.maxTokens": {
+          "type": "number",
+          "default": 32000,
+          "minimum": 1,
+          "description": "Maximum tokens to generate per response. Only applies when using a forked CLI that supports generation parameters."
         }
       }
     },

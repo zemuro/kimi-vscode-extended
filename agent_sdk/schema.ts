@@ -785,6 +785,8 @@ export interface SessionOptions {
   skillsDir?: string;
   // Custom share directory path, overrides KIMI_SHARE_DIR for CLI
   shareDir?: string;
+  // Generation parameter overrides (temperature, topP, maxTokens)
+  generationOverrides?: { temperature?: number; topP?: number; maxTokens?: number };
 }
 
 // Session info

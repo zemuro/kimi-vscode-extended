@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { bridge } from "@/services";
-import type { ExtensionConfig } from "shared/types";
+import type { ExtensionConfig, GenerationConfig } from "shared/types";
 import type { MCPServerConfig, ModelConfig, ThinkingMode, SlashCommandInfo } from "@moonshot-ai/kimi-agent-sdk";
 
 export const DEFAULT_EXTENSION_CONFIG: ExtensionConfig = {
@@ -13,6 +13,11 @@ export const DEFAULT_EXTENSION_CONFIG: ExtensionConfig = {
   showThinkingContent: true,
   showThinkingExpanded: true,
   version: "",
+  generationConfig: {
+    temperature: 0.7,
+    topP: 0.9,
+    maxTokens: 32000,
+  },
 };
 
 export function getModelThinkingMode(model: ModelConfig): ThinkingMode {
@@ -73,12 +78,15 @@ interface SettingsState {
   wireSlashCommands: SlashCommandInfo[];
   slashCommands: SlashCommandInfo[];
   isLoggedIn: boolean;
+  generationConfigOpen: boolean;
 
   setCurrentModel: (model: string) => void;
   setThinkingEnabled: (enabled: boolean) => void;
   updateModel: (modelId: string) => void;
   toggleThinking: () => void;
   setExtensionConfig: (config: ExtensionConfig) => void;
+  setGenerationConfigOpen: (open: boolean) => void;
+  updateGenerationConfig: (config: Partial<GenerationConfig>) => void;
   setMCPServers: (servers: MCPServerConfig[]) => void;
   setMCPModalOpen: (open: boolean) => void;
   setWorkDirModalOpen: (open: boolean) => void;
@@ -106,6 +114,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   wireSlashCommands: [],
   slashCommands: [],
   isLoggedIn: false,
+  generationConfigOpen: false,
 
   setCurrentModel: (currentModel) => set({ currentModel }),
 
@@ -152,6 +161,21 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   },
 
   setExtensionConfig: (extensionConfig) => set({ extensionConfig }),
+
+  setGenerationConfigOpen: (generationConfigOpen) => set({ generationConfigOpen }),
+
+  updateGenerationConfig: (partial) => {
+    const { extensionConfig } = get();
+    const newConfig = { ...extensionConfig.generationConfig, ...partial };
+    set({
+      extensionConfig: { ...extensionConfig, generationConfig: newConfig },
+    });
+    bridge.saveConfig({
+      model: get().currentModel,
+      thinking: get().thinkingEnabled,
+      generation: newConfig,
+    });
+  },
 
   setMCPServers: (mcpServers) => set({ mcpServers }),
 

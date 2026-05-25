@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { IconSettings, IconServer, IconLogout, IconLogin, IconLoader2, IconRefresh, IconFileText, IconFolder } from "@tabler/icons-react";
+import { IconSettings, IconServer, IconLogout, IconLogin, IconLoader2, IconRefresh, IconFileText, IconFolder, IconAdjustments } from "@tabler/icons-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useChatStore, useSettingsStore } from "@/stores";
 import { bridge } from "@/services";
 import { cn } from "@/lib/utils";
+import { GenerationSettings } from "./GenerationSettings";
 
 interface ActionMenuProps {
   className?: string;
@@ -43,11 +44,17 @@ function MenuItem({ onClick, disabled, danger, children }: { onClick: () => void
 export function ActionMenu({ className, onAuthAction }: ActionMenuProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showGenerationSettings, setShowGenerationSettings] = useState(false);
   const { setMCPModalOpen, isLoggedIn, setIsLoggedIn, extensionConfig } = useSettingsStore();
   const { isStreaming } = useChatStore();
 
   const handleOpenSettings = () => {
     bridge.openSettings();
+    setOpen(false);
+  };
+
+  const handleOpenGenerationSettings = () => {
+    setShowGenerationSettings(true);
     setOpen(false);
   };
 
@@ -102,6 +109,10 @@ export function ActionMenu({ className, onAuthAction }: ActionMenuProps) {
             <IconServer className="size-4 text-muted-foreground" />
             <span className="flex-1">MCP Servers</span>
           </MenuItem>
+          <MenuItem onClick={handleOpenGenerationSettings}>
+            <IconAdjustments className="size-4 text-muted-foreground" />
+            <span className="flex-1">Generation Params</span>
+          </MenuItem>
           <MenuItem onClick={handleOpenSettings}>
             <IconSettings className="size-4 text-muted-foreground" />
             <span className="flex-1">General Config</span>
@@ -131,6 +142,8 @@ export function ActionMenu({ className, onAuthAction }: ActionMenuProps) {
           </MenuItem>
         </MenuSection>
       </PopoverContent>
+
+      <GenerationSettings open={showGenerationSettings} onOpenChange={setShowGenerationSettings} />
     </Popover>
   );
 }

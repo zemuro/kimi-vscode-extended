@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import type { ExtensionConfig } from "../../shared/types";
+import type { ExtensionConfig, GenerationConfig } from "../../shared/types";
 
 declare const __EXTENSION_VERSION__: string;
 const EXTENSION_VERSION = typeof __EXTENSION_VERSION__ !== "undefined" ? __EXTENSION_VERSION__ : "0.0.0";
@@ -45,6 +45,15 @@ export const VSCodeSettings = {
     return getConfig().get<"never" | "onConversationStart" | "onFileChange">("editorContext", "never");
   },
 
+  get generationConfig(): GenerationConfig {
+    const config = getConfig();
+    return {
+      temperature: config.get<number>("generation.temperature", 0.7),
+      topP: config.get<number>("generation.topP", 0.9),
+      maxTokens: config.get<number>("generation.maxTokens", 32000),
+    };
+  },
+
   getExtensionConfig(): ExtensionConfig {
     return {
       executablePath: this.executablePath,
@@ -56,6 +65,7 @@ export const VSCodeSettings = {
       showThinkingContent: this.showThinkingContent,
       showThinkingExpanded: this.showThinkingExpanded,
       version: EXTENSION_VERSION,
+      generationConfig: this.generationConfig,
     };
   },
 };
@@ -65,7 +75,7 @@ export function onSettingsChange(callback: (changedKeys: string[]) => void): vsc
     if (!e.affectsConfiguration("kimi")) {
       return;
     }
-    const keys = ["yoloMode", "autosave", "executablePath", "enableNewConversationShortcut", "useCtrlEnterToSend", "environmentVariables", "showThinkingContent", "showThinkingExpanded", "editorContext"];
+    const keys = ["yoloMode", "autosave", "executablePath", "enableNewConversationShortcut", "useCtrlEnterToSend", "environmentVariables", "showThinkingContent", "showThinkingExpanded", "editorContext", "generation.temperature", "generation.topP", "generation.maxTokens"];
     const changedKeys = keys.filter((key) => e.affectsConfiguration(`kimi.${key}`));
     if (changedKeys.length > 0) {
       callback(changedKeys);

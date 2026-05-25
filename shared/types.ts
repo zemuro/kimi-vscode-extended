@@ -1,8 +1,15 @@
 import type { RunResult, StreamEvent, ContentPart, SlashCommandInfo } from "@moonshot-ai/kimi-agent-sdk";
 
+export interface GenerationConfig {
+  temperature?: number;
+  topP?: number;
+  maxTokens?: number;
+}
+
 export interface SessionConfig {
   model: string;
   thinking?: boolean;
+  generation?: GenerationConfig;
 }
 
 export interface ProjectFile {
@@ -39,6 +46,7 @@ export interface ExtensionConfig {
   showThinkingContent: boolean;
   showThinkingExpanded: boolean;
   version: string;
+  generationConfig: GenerationConfig;
 }
 
 export interface WorkspaceStatus {

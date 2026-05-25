@@ -1,5 +1,5 @@
 import * as crypto from "node:crypto";
-import { ProtocolClient, type ClientInfo } from "./protocol";
+import { ProtocolClient, type ClientInfo, type GenerationOverrides } from "./protocol";
 import { SessionError } from "./errors";
 import { log } from "./logger";
 import type { SessionOptions, ContentPart, StreamEvent, RunResult, ApprovalResponse, SlashCommandInfo, ExternalTool } from "./schema";
@@ -15,6 +15,7 @@ interface ActiveConfig {
   env: string; // JSON stringified for comparison
   externalTools: string;
   skillsDir: string | undefined;
+  generationOverrides: string; // JSON stringified for comparison
 }
 
 /** Turn interface, represents a single conversation turn */
@@ -165,6 +166,7 @@ class SessionImpl implements Session {
   private _agentFile?: string;
   private _skillsDir?: string;
   private _shareDir?: string;
+  private _generationOverrides?: GenerationOverrides;
   private _slashCommands: SlashCommandInfo[] = [];
   private _planMode: boolean = false;
 
@@ -188,6 +190,7 @@ class SessionImpl implements Session {
     this._skillsDir = options.skillsDir;
     this._shareDir = options.shareDir;
     this._clientInfo = options.clientInfo;
+    this._generationOverrides = options.generationOverrides;
 
     log.session("Created session %s in %s", this._sessionId, this._workDir);
   }
@@ -341,6 +344,7 @@ class SessionImpl implements Session {
       agentFile: this._agentFile,
       skillsDir: this._skillsDir,
       clientInfo: this._clientInfo,
+      generationOverrides: this._generationOverrides,
     });
 
     this._slashCommands = initResult.slash_commands;
@@ -358,6 +362,7 @@ class SessionImpl implements Session {
       env: JSON.stringify(this._env),
       externalTools: JSON.stringify(this._externalTools.map((t) => t.name)),
       skillsDir: this._skillsDir,
+      generationOverrides: JSON.stringify(this._generationOverrides),
     };
   }
 
@@ -370,7 +375,8 @@ class SessionImpl implements Session {
       current.executable !== active.executable ||
       current.env !== active.env ||
       current.externalTools !== active.externalTools ||
-      current.skillsDir !== active.skillsDir
+      current.skillsDir !== active.skillsDir ||
+      current.generationOverrides !== active.generationOverrides
     );
   }
 }
